@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 // Imports
 use App\Models\Workout;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 use Inertia\Inertia;
 
-class WorkoutController extends Controller
+class WorkoutController extends BaseController
 {
+    use AuthorizesRequests, ValidatesRequests;
+
     public function index()
     {
         $workouts = auth()->user()->workouts()->latest()->get();
@@ -65,10 +70,10 @@ class WorkoutController extends Controller
         
         $validated = $request->validate([
             'exercise_name' => 'required|string|max:255',
-            'muscle_group' => 'required|in:abdominals,abductors,adductors,biceps,calves,cardio,chest,forearms,full body,glutes,hamstrings,lats,lower back,neck,quadriceps,shoulders,traps,triceps,upper back',
-            'weight' => 'nullable|string|max:255',
-            'reps' => 'required|numeric|min:1',
-            'sets' => 'nullable|integer|min:1',
+            'muscle_group' => 'required|string',
+            'weight' => 'nullable|string',
+            'reps' => 'required|numeric',
+            'sets' => 'nullable|integer',
             'workout_date' => 'required|date',
             'notes' => 'nullable|string',
         ]);
@@ -79,7 +84,7 @@ class WorkoutController extends Controller
             ->with('message', 'Workout updated successfully.');
     }
 
-    public function destroy(Workout $workout)
+    public function destroy(Workout $workout) 
     {
         $this->authorize('delete', $workout);
         

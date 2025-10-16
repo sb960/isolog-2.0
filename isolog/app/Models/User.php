@@ -75,4 +75,9 @@ class User extends Authenticatable
             $model->uuid = Str::uuid();
         });
     }
+
+    public function workouts()
+    {
+        return $this->hasMany(Workout::class);
+    }
 }
